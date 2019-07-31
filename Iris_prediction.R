@@ -43,7 +43,6 @@ rf_table = table(predict_rf,testing$Species)
 con_rf = confusionMatrix(rf_table)
 con_rf
 
-
 knn_train <- training[,1:4]
 knn_test <- testing[,1:4]
 knn_train_label <- training[,5]
@@ -51,11 +50,9 @@ knn_test_label <- testing[,5]
 knn_model <-knn(train = knn_train,test = knn_test,cl=knn_train_label,k=21)
 confusionMatrix(knn_model,knn_test_label)
 
-  
 # Run algorithms using 10-fold cross validation
 control <- trainControl(method="cv", number=10)
 metric <- "Accuracy"
-
 
 set.seed(7)
 fit.lda <- train(Species~., data=training, method="lda", metric=metric, trControl=control)
@@ -79,7 +76,6 @@ results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, 
 summary(results)
 
 dotplot(results)
-
 
 predict_lda <- predict(fit.lda,testing)
 confusionMatrix(predict_lda,testing$Species)
