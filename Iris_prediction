@@ -1,0 +1,84 @@
+library(psych)
+library(tidyverse)
+library(caret)
+library(rpart)
+library(party)
+library(randomForest)
+library(class)
+
+data(iris)
+
+#data exploration
+summary(iris)
+pairs.panels(iris[1:4],bg=iris$answer,pch=21)
+featurePlot(x=iris[,1:4],y=iris[,5],plot="pairs")
+featurePlot(x=iris[,1:4],y=iris[,5],plot="box")
+scales <- list(x=list(relation="free"), y=list(relation="free"))
+featurePlot(x=iris[,1:4],y=iris[,5],plot="density",scale=scales)
+  
+#data splitting
+trainIndex = createDataPartition(iris$Species,p=0.7,times=1,list=F)
+training = iris[trainIndex,]
+testing = iris[-trainIndex,]
+
+#modelling
+
+set.seed(7)
+tree = ctree(Species~.,data=training)
+plot(tree)
+predict_tree = predict(tree,testing)
+tree_table = table(predict_tree,testing$Species)
+con_tree = confusionMatrix(tree_table)
+
+
+set.seed(7)
+rf = randomForest(Species~.,data=training)
+predict_rf = predict(rf,testing)
+rf_table = table(predict_rf,testing$Species)
+con_rf = confusionMatrix(rf_table)
+con_rf
+
+
+knn_train <- training[,1:4]
+knn_test <- testing[,1:4]
+knn_train_label <- training[,5]
+knn_test_label <- testing[,5]
+knn_model <-knn(train = knn_train,test = knn_test,cl=knn_train_label,k=21)
+confusionMatrix(knn_model,knn_test_label)
+
+  
+# Run algorithms using 10-fold cross validation
+control <- trainControl(method="cv", number=10)
+metric <- "Accuracy"
+
+
+set.seed(7)
+fit.lda <- train(Species~., data=training, method="lda", metric=metric, trControl=control)
+# b) nonlinear algorithms
+# CART
+set.seed(7)
+fit.cart <- train(Species~., data=training, method="rpart", metric=metric, trControl=control)
+# kNN
+set.seed(7)
+fit.knn <- train(Species~., data=training, method="knn", metric=metric, trControl=control)
+# c) advanced algorithms
+# SVM
+set.seed(7)
+fit.svm <- train(Species~., data=training, method="svmRadial", metric=metric, trControl=control)
+# Random Forest
+set.seed(7)
+fit.rf <- train(Species~., data=training, method="rf", metric=metric, trControl=control)
+
+# summarize accuracy of models
+results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+
+dotplot(results)
+
+
+predict_lda <- predict(fit.lda,testing)
+confusionMatrix(predict_lda,testing$Species)
+
+
+predict_tree <- predict(fit.knn,testing)
+confusionMatrix(predict_tree,testing$Species)
