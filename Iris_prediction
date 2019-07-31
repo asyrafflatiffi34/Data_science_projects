@@ -1,3 +1,5 @@
+#Iris Classification Problem
+
 library(psych)
 library(tidyverse)
 library(caret)
@@ -10,6 +12,9 @@ data(iris)
 
 #data exploration
 summary(iris)
+
+
+
 pairs.panels(iris[1:4],bg=iris$answer,pch=21)
 featurePlot(x=iris[,1:4],y=iris[,5],plot="pairs")
 featurePlot(x=iris[,1:4],y=iris[,5],plot="box")
