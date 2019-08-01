@@ -10,7 +10,7 @@ output: rmarkdown::github_document
 library(readxl)
 library(ggplot2)
 library(plotly)
-df <- read_excel("~/Programming/Dataset/Excel/LungCapData.xls")
+df <- read_excel("https://github.com/asyrafflatiffi34/data_science_projects/blob/master/LungCapData.xls")
 attach(df)
 df$Smoke = as.factor(Smoke)
 df$Gender = as.factor(Gender)
