@@ -3,6 +3,9 @@ output:
   html_document:
     keep_md: true
 ---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
 #Analysis of Lung Capcity
 ##by Asyraff latiffi
   
