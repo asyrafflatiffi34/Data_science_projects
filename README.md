@@ -6,7 +6,7 @@ Repository containing portfolio of data science projects completed by me for sel
 
 ## Content 
   * Machine Learning
-    * [Iris Classification](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Iris_prediction.R): Classification problem to identify the type of flower species. Four different features is used to accurately predict which type of species it is. 
+    * [Iris Classification](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Iris_prediction/iris.md): Classification problem to identify the type of flower species. Four different features is used to accurately predict which type of species it is. 
     * [Big Mart Prediction](https://github.com/asyrafflatiffi34/big_mart_precition/blob/master/r_code): Create a prediction model to predict sales for shop. This would help them to minimize wastage and also fulfill all the demands.
     * [Loan Repayment](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/loan_prediction.R): Create a model to identify whether a loan application is able to repay a loan. 
  
