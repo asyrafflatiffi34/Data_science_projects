@@ -1,0 +1,100 @@
+---
+  output: rmarkdown::github_document
+---
+  
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+  
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "figures/README-")
+```
+
+#Supervised Learning Project: Iris Classification
+The Iris flower data set with several outcomes introduced by the British statistician and biologist Ronald Fisher in his 1936 paper. The data set consists of 50 samples from each of three species of Iris (Iris setosa, Iris virginica and Iris versicolor). Four features were measured from each sample: the length and the width of the sepals and petals, in centimeters.
+
+##Load Packages and Data
+In this section, we will load all the necessary packages for this project. Since the iris data set is already in base R and we just need to load it. 
+```{r,echo=TRUE,warning=FALSE,message=FALSE}  
+#Import necessary packages for the project
+library(psych)
+library(tidyverse)
+library(caret)
+library(rpart)
+library(party)
+library(randomForest)
+library(class)
+
+#Load data set
+data(iris)
+
+#First five rows on the data set
+head(iris)
+
+```
+
+##Data Exploration
+During this stage, we will investigate the data set even futher to have a better understanding of the data. 
+
+For this project, there is a total of four input variables and one target variable. All four input variables are numerical inputs and the target variable is a categorical data. 
+
+```{r,echo=TRUE}
+#To see the shape of the data
+glimpse(iris)
+
+#Have a look at the summary statistics of input variables
+describe(select(iris,-Species))
+```
+From the glimpse function, we can see that there is a total of 150 observation and '-Species' is in the function is to ensure that only input variables output is seen. 
+
+
+###Data Visualization
+Data Visualization helps us see how the target variable react with the input variables
+
+```{r,echo=TRUE}
+#Scatter plot
+featurePlot(x=iris[,1:4],y=iris[,5],plot="pairs")
+```
+From the scatterplot, we can see that each species of the flower is grouped at the different part of the plot.
+
+```{r,echo=TRUE}
+#Boxplot 
+featurePlot(x=iris[,1:4],y=iris[,5],plot="box")
+```
+From the boxplot,the median and range is different for each input variable. The target variable also makes it different. 
+
+
+##Data splitting
+Before training a machine learning model, it is crucial to split the data set into two groups so that we are able to test out model. The data is split into training and testing data. The training data consist of 70% of the data set. 
+
+```{r,echo=TRUE}
+#data split
+trainIndex = createDataPartition(iris$Species,p=0.7,times=1,list=F)
+training = iris[trainIndex,]
+testing = iris[-trainIndex,]
+```
+
+##Data Modelling
+For data modelling, we will take the training data and use decision tree and random forest to create the model. 
+
+```{r,echo=TRUE}
+tree = ctree(Species~.,data=training)
+plot(tree)
+
+rf = randomForest(Species~.,data=training)
+
+```
+
+##Model Evaluation 
+Once we have done the modelling, confusion matrix is used to determine the accuracy of each model. Decision tree has an accurate rate of 97% and Random Forest has an accuracy of 93%. In this case, we will use the decision tree model as they provide a higher rate of accuracy. 
+
+```{r,echo=TRUE}
+predict_tree = predict(tree,testing)
+tree_table = table(predict_tree,testing$Species)
+con_tree = confusionMatrix(tree_table)
+con_tree
+
+predict_rf = predict(rf,testing)
+rf_table = table(predict_rf,testing$Species)
+con_rf = confusionMatrix(rf_table)
+con_rf
+
+```
