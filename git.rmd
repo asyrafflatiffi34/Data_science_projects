@@ -1,0 +1,39 @@
+---
+output: rmarkdown::github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "README_figs/README-")
+```
+
+#Analysis of Lung Capcity
+##by Asyraff latiffi
+  
+  
+**Part 1**
+```{r,echo=FALSE,warning=FALSE,message=FALSE}  
+library(readxl)
+library(ggplot2)
+library(plotly)
+df <- read_excel("~/Programming/Dataset/Excel/LungCapData.xls")
+attach(df)
+df$Smoke = as.factor(Smoke)
+df$Gender = as.factor(Gender)
+df$Caesarean = as.factor(Caesarean)
+summary(df)
+a = ggplot(df,aes(x=Smoke,y=LungCap))+
+  geom_boxplot()
+a
+```
+
+**Part 2**
+```{r,echo=FALSE}
+plot(Age[Gender=='female']~Height[Gender=='female'])
+hist(LungCap[Gender=='male'])
+```
+
+The mean Lung Capacity for men was `r mean(df$LungCap[Gender=='male'])`.
+
+~~bapak kau~~
