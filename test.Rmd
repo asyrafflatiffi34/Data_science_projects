@@ -6,9 +6,6 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "README_figs/README-")
-```
 
 #Analysis of Lung Capcity
 ##by Asyraff latiffi
@@ -16,6 +13,7 @@ knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "REA
   
 **Part 1**
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}  
+knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "README_figs/README-")
 library(readxl)
 library(ggplot2)
 library(plotly)
