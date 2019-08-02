@@ -77,14 +77,16 @@ Data Visualization helps us see how the target variable react with the input var
 featurePlot(x=iris[,1:4],y=iris[,5],plot="pairs")
 ```
 
-<img src="figures/README-unnamed-chunk-4-1.png" width="672" /> From the scatterplot, we can see that each species of the flower is grouped at the different part of the plot.
+<img src="figures/README-unnamed-chunk-4-1.png" width="672" /> 
+From the scatterplot, we can see that each species of the flower is grouped at the different part of the plot.
 
 ``` r
 #Boxplot 
 featurePlot(x=iris[,1:4],y=iris[,5],plot="box")
 ```
 
-<img src="figures/README-unnamed-chunk-5-1.png" width="672" /> From the boxplot,the median and range is different for each input variable. The target variable also makes it different.
+<img src="figures/README-unnamed-chunk-5-1.png" width="672" /> 
+From the boxplot,the median and range is different for each input variable. The target variable also makes it different.
 
 Data splitting
 --------------
