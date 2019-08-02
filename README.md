@@ -11,5 +11,5 @@ Repository containing portfolio of data science projects completed by me for sel
     * [Loan Repayment](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/loan_prediction.R): Create a model to identify whether a loan application is able to repay a loan. 
     
   * Exploratory Data Analysis
-   * [Lung Capacity](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Lungcap/lungcap.md): Understading the relationship between lung capacity and five other variables(age,gender,smoke etc.)
+    * [Lung Capacity](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Lungcap/lungcap.md): Understading the relationship between lung capacity and five other variables(age,gender,smoke etc.)
  
