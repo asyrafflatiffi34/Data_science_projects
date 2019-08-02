@@ -1,0 +1,124 @@
+---
+  output: rmarkdown::github_document
+---
+  
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+  
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "figures/README-")
+```
+#Exploratory Data Analysis of Lung Capacity
+Lung Capacity data set is to measure an individual's lung capacity. The data set has a total of six variables. The following are the variables: 
+
+* LungCap: It's the lung capacity of the person
+* Age: It's how old is the person
+* Height: How tall is the person
+* Smoke: If a person smokes or not
+* Gender: Male or female
+* Caesarean: If the person is born by caesarean
+
+From the data set, we will try to answer the following questions:
+
+* Who are the people in the data set?(age,gender,smoke.etc)
+* Who are the people who are smoking?
+* What factors influences a person's lung capacity?
+  
+##Load Data and Packages
+The following are the packages used for this project. 
+```{r,echo=TRUE,warning=FALSE,message=FALSE}  
+library(readxl)
+library(tidyverse)
+library(psych)
+library(gplots)
+
+#Load data set
+df <- read_excel("~/Programming/Dataset/Excel/LungCapData.xls")
+
+#First six rows of the data set
+head(df)
+attach(df)
+
+```
+
+##Data Exploration
+In this section, we will explore the data to better understand the shape of the data. This section will also tell us the type of data for each variable to ensure we are able to use it for analysis. 
+```{r,echo=TRUE}
+#see the summary of each variable
+summary(df)
+
+#shape of the data set
+glimpse(df)
+```
+We can see LungCap has a huge range and age of the observations is betwween 3 and 19 years old. We can conclude that this data set has toddlers all the way to late teens. 
+
+
+##Data Preprocessing
+From the previous section, we can see that Smoke, Gender and Caesarean all are characters. Here we will convert those variables into categorical data to ensure we are able to use them for analysis later. 
+```{r,echo=TRUE}
+df$Smoke <- as.factor(Smoke)
+df$Gender <- as.factor(Gender)
+df$Caesarean <- as.factor(Caesarean)
+```
+
+##Data Analysis and Visualization
+In this section, we will look at the lungcap,age and other variables much closer to get a better understanding of the data set. 
+
+###Who Are The Participants?
+```{r,echo=TRUE}
+hist(x=LungCap)
+```
+
+Luncap is the lung capacity for each observation. From the histogram, we can see the distribution of the Lungcap and the mean is around 7.8
+
+```{r,echo=TRUE}
+hist(x=Age)
+```
+
+We can also see the distribution of the age among the participants and the mean is around 12.30.
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=Smoke))+
+  geom_bar()
+```
+
+We can clearly see that most of the participants are non smokers. 
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=Gender))+
+  geom_bar()
+```
+
+The number of male and female participants are similar. 
+
+
+###Who Are The Smokers?
+In this section, we will see which group are mainly smoking. 
+```{r,echo=TRUE}
+ggplot(df,aes(x=Gender,fill=Smoke))+
+  geom_bar()
+```
+
+From the bar chart, we can see that the number of female smokers is slightly higher than the male smokers. 
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=Age,col=Smoke,fill=Smoke))+
+  geom_density(alpha=0.5)
+```
+
+We can clearly see that the smokers are mainly from an older age group. This is quite understandable since most young people do not start smoking until they are teenageers. 
+
+#What Factors Someone's Lung Capacity?
+In this section, we are going to see which variable has a relationship with lung capacity. 
+
+```{r,echo=TRUE}
+pairs.panels(df[1:3])
+```
+
+From the pair panels, it is clear that both age and height has a positive correlation with lung capacity.
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=Smoke,y=LungCap,col=Gender))+
+  geom_boxplot()
+```
+
+Is it clear from the boxplot that male has a higher rate of lung capacity. Although it is shown that smokers do have slightly higher lung capacity, we can conclude that this is because most smokers are older than non smokers. 
