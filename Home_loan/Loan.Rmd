@@ -1,0 +1,231 @@
+---
+  output: rmarkdown::github_document
+   #html_document: default
+---
+  
+  <!-- README.md is generated from README.Rmd. Please edit that file -->
+  
+```{r, echo = FALSE}
+knitr::opts_chunk$set(collapse=TRUE, comment="##", fig.retina=2, fig.path = "figures/README-")
+```
+
+#Loan Eligibility Predictive Model
+A company wants to automate the loan eligibility process (real time) based on customer detail provided while filling online application form. These details are Gender, Marital Status, Education, Number of Dependents, Income, Loan Amount, Credit History and others. To automate this process, they have given a problem to identify the customers segments, those are eligible for loan amount so that they can specifically target these customers. Here are the variables in the data set:
+
+* Variable: Description
+* Loan_ID: Unique Loan ID
+* Gender: Male/ Female
+* Married: Applicant married (Y/N)
+* Dependents: Number of dependents
+* Education: Applicant Education (Graduate/ Under Graduate)
+* Self_Employed: Self employed (Y/N)
+* ApplicantIncome: Applicant income
+* CoapplicantIncome: Coapplicant income
+* LoanAmount: Loan amount in thousands
+* Loan_Amount_Term: Term of loan in months
+* Credit_History: credit history meets guidelines
+* Property_Area: Urban/ Semi Urban/ Rural
+* Loan_Status: Loan approved (Y/N)
+
+##Load Packages and Data
+In this section, we will load all the necessary packages for this project. 
+```{r,echo=TRUE,warning=FALSE,message=FALSE}  
+#Import necessary packages for the project
+library(readr)
+library(caret)
+library(tidyverse)
+library(psych)
+library(party)
+library(randomForest)
+library(mice)
+library(VIM)
+library(e1071)
+
+#Load data set
+df <- read_csv("~/Programming/Dataset/CSV/loan/train_ctrUa4K.csv")
+
+#First six rows on the data set
+head(df)
+
+```
+
+##Data Exploration
+During this stage, we will investigate the data set even futher to have a better understanding of the data. 
+
+For this project, there is a total of 614 observations and 13 variables.
+```{r,echo=TRUE}
+#To see the shape of the data
+glimpse(df)
+summary(df)
+```
+Most of the variables are characters and needs to transform them into categorical data. 
+
+```{r,echo=TRUE}
+#convert columns into factors
+cols = c('Gender','Married','Dependents','Education','Self_Employed','Credit_History','Property_Area','Loan_Status','Loan_Amount_Term')
+df[cols] = lapply(df[cols], factor)
+```
+
+###Data Visualization
+In this section, we can visualize the data to look for useful insight. 
+```{r,echo=TRUE}
+#Credit hisotry and loan status
+ggplot(df,aes(x=Credit_History,fill=Loan_Status))+
+  geom_bar()
+```
+
+From this plot, it is quite obvious that an applicant with a credit history has a higher probability of getting a loan. 
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=Property_Area,fill=Loan_Status))+
+  geom_bar()
+```
+
+We can also that applicants living in a semi urban area has a better chance of getting their loans approved. 
+
+We can also get similar results in different variable such as married and education. 
+
+```{r,echo=TRUE}
+#Loan Amount histogram
+ggplot(df,aes(x=LoanAmount))+
+  geom_histogram(fill='purple',bins = 50)
+
+ggplot(df,aes(y=LoanAmount))+
+  geom_boxplot()
+
+ggplot(df,aes(y=LoanAmount,x=df$Education))+
+  geom_boxplot()
+```
+
+We can see from both the histogram and boxplot that LoanAmount has extreme values and requires transformation. 
+
+```{r,echo=TRUE}
+ggplot(df,aes(x=ApplicantIncome,fill=Loan_Status))+
+  geom_histogram(fill='purple',bins=50)
+
+ggplot(df,aes(y=ApplicantIncome))+
+  geom_boxplot()
+```
+
+ApplicantIncome also has some extreme values as can be seen in both histrogram and boxplot. 
+
+##Data Transformation
+We will transform both ApplicantIncome and LoanAmount using log due to their skewness. 
+
+```{r,echo=TRUE}
+df$LoanAmount <- log1p(df$LoanAmount)
+df$ApplicantIncome <- log1p(df$ApplicantIncome)
+
+ggplot(df,aes(x=ApplicantIncome))+
+  geom_histogram(fill='purple',bins=50)
+
+ggplot(df,aes(x=LoanAmount))+
+  geom_histogram(fill='purple',bins=50)
+
+```
+
+We can see from the new histogram that both are no longer skewed and this would help the model to perform better in the later phase of this project. 
+
+##Missing Values
+From our earlier exploration, we have found out that there are some missing values in the data set.
+```{r,echo=TRUE}
+#Missing data for each column
+colSums(is.na(df))
+
+```
+From here we can see total of missing data from each variable. Credit_History has the most with 50 and Self_Employed with 32 missing data. 
+
+```{r,echo=TRUE}
+md.pattern(df)
+```
+
+Here we can see that 480 observations have no missing values in all the columns. We can see 43 observations has missing values only in Credit_History,25 has missing values only in Self_Employed and so on. 
+
+To make things easier, it is best to visualize the missing values to understand them better. 
+```{r,echo=TRUE}
+#Missing data visualize
+aggr(df,numbers=TRUE,prop=c(TRUE,TRUE),cex.axis=0.5)
+```
+
+From the plot, we can see that the variables with the highest amount of missing value is Credit_History with 8% and the second highest is Self_Employed with 5%. On the combinations plot, we can see the different combination of missing values. 
+
+##Data Imputing
+For the missing values, we have to impute the data to ensure for them modelling phase. We will use the mice package to do so. m = 5 refers to to the number of imputed dataset,pmm referst to preditive mean matching as the method and maxit is the number of iterations.
+```{r,echo=TRUE}
+imputed_Data <- mice(df, m=5, maxit = 10, method = 'pmm', seed = 500)
+summary(imputed_Data)
+
+completeData <- complete(imputed_Data,2)
+
+#Change positive into Y
+completeData$Loan_Status <- ifelse(completeData$Loan_Status == 'Y',1,0)
+
+#Change target variable into factor
+completeData$Loan_Status <- as.factor(completeData$Loan_Status)
+```
+
+
+```{r,echo=TRUE}
+skewness(completeData$LoanAmount)
+skewness(completeData$ApplicantIncome)
+```
+
+##Data splitting
+Before training a machine learning model, it is crucial to split the data set into two groups so that we are able to test out model. We will use the newly imputed data set for the modelling. The data is split into training and testing data. The training data consist of 70% of the data set. The Loan_ID will be remove for the modelling phase as it is only a unique number for each applicantion. 
+
+```{r,echo=TRUE}
+#splitting
+new_df <- dplyr::select(completeData,-Loan_ID)
+trainIndex <- createDataPartition(new_df$Loan_Status,p=0.7,times=1,list=F)
+training <- new_df[trainIndex,]
+testing <- new_df[-trainIndex,]
+
+```
+
+##Data Modelling
+For data modelling, we will take the training data and use decision tree, random forest and logistic regression to create the model. 
+
+```{r,echo=TRUE}
+#modelling
+tree_train <- ctree(Loan_Status~.,data=training)
+plot(tree_train)
+```
+
+```{r,echo=TRUE}
+rf <- randomForest(Loan_Status~.,data=training)
+varImpPlot(rf)
+```
+
+Using varImpPlot we can see the importance of each variable by using the random forest model. Credit_History is the most important and followed by others according to the plot. 
+
+```{r,echo=TRUE}
+glm_model <- glm(Loan_Status~.,data=training,family=binomial)
+summary(glm_model)
+```
+
+We can see the importance of each variable in the logistic regression model accoring to their p values. Credit_History is important and also the area the applicant lives in. 
+
+##Model Evaluation 
+Once we have done the modelling, confusion matrix is used to determine the accuracy of each model. Decision tree has an accurate rate of 81%, random forest has an accuracy of 78% and logistic regression has 82%. In this case, we will use the logistic regression model as they provide a higher rate of accuracy. 
+
+```{r,echo=TRUE}
+predict_tree <- predict(tree_train,testing)
+tree <- confusionMatrix(predict_tree,testing$Loan_Status,positive = '1')
+tree
+
+
+predict_rf <- predict(rf,testing)
+new_rf <- confusionMatrix(predict_rf,testing$Loan_Status,positive='1')
+new_rf
+
+predict_glm <- predict(glm_model,testing,type='response')
+predict_glm <- ifelse(predict_glm>=0.55,1,0)
+lr_table <- table(Predict= predict_glm,Actual = testing$Loan_Status)
+con_glm <- confusionMatrix(lr_table,positive='1')
+con_glm
+```
+
+##Summary
+With the model, the company is able to automate their loan eligiblity process at real time. This would save the company a lot of time from checking them manually and is able to review more applicants at the same time. 
+
+This would help the company to identify customers who would be eligible for the home loan. 
