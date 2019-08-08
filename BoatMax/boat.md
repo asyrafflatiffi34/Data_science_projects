@@ -1,0 +1,124 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+Maximizing Boat Profit
+======================
+
+Floatway Tours has RM420,000 that can be used to purchase new rental boats for hire. The boats can be purchased from two different manufacturers. Floataway Tours would like to purchase at least 50 boats and would like to purchase the same number from Sleekboat(supplier 1) and Racer(supplier 2) to main goodwill.
+
+| Boat       | Builder   | Cost    | Seating | Daily Profit |
+|------------|-----------|---------|---------|--------------|
+| Speedhawk  | Sleekboat | RM6,000 | 3       | RM70         |
+| Silverbird | Sleekboat | RM7,000 | 5       | RM80         |
+| Catman     | Racer     | RM5,000 | 2       | RM50         |
+| Classy     | Racer     | RM9,000 | 6       | RM110        |
+
+From the table, we can see the different type of boats each supplier sells. We will use linear programming to come up with a solution on how many boats to buy for the company to maximize their profit.
+
+Load Package
+------------
+
+``` r
+#Only one package is required in this problem. 
+library(lpSolve)
+```
+
+Define Decision Variables
+-------------------------
+
+In this phase, we are going to define decision variables for us to put in the objective function later.
+
+-   x1 = number of Speedhawks ordered
+-   x2 = number of Silverbirds ordered
+-   x3 = number of Catmans ordered
+-   x4 = number of Classy ordered
+
+Define Objective Function
+-------------------------
+
+Here we will define wether it's a max or min function. In this problem, it's a miximization problem as we are trying to maximize the profit.
+
+Max: 70x1 + 80x2 + 50x3 + 110x4
+
+``` r
+##set objective
+objective.in <- c(70,80,50,110)
+```
+
+Defining Constraint
+-------------------
+
+For this phase, we will define the constraints mentioned earlier one at a time to make it easier to understand.
+
+1.  Maximum budget RM420,000: <br> 6,000x1 + 7,000x2 + 5,000x3 + 9000x4 &lt;= 420,000
+2.  Purchase at least 50 boats: <br> x1+x2+x3+x4 &gt;= 50
+3.  Number of boats equal from both supplier: <br> x1+x2-x3-x4 = 0
+4.  At least 200 seats: <br> 3x1+5x2+2x3+6x4 &gt;= 200
+
+``` r
+const.mat <- matrix(c(6000,7000,5000,9000,
+                      1,1,1,1,
+                      3,5,2,6,
+                      1,1,-1,-1),
+                    nrow = 4,byrow = TRUE)
+```
+
+Here we can see the constraint matrix for each boat.
+
+``` r
+budget <- 420000
+number_boats <- 50
+seats <- 200
+supplier <- 0
+
+const.rhs <- c(budget,number_boats,seats,supplier)
+
+const.dir <- c("<=",">=",">=","=") 
+```
+
+We put this in to ensure the constraints right hand side so that we can complete the constraint.
+
+Solution
+--------
+
+Here we will put in the objective function and contraint in the function to find the solution.
+
+``` r
+optimal<-lp(direction = 'max',objective.in,const.mat,const.dir,const.rhs)
+```
+
+Here we will check the status of our solution. If we reach an optimal solution then the status should be 0.
+
+``` r
+optimal$status
+## [1] 0
+```
+
+Here we can get our optimal solution.
+
+| x1  | x2  | x3  | x4  |
+|-----|-----|-----|-----|
+| 28  | 0   | 0   | 28  |
+
+From the table we can see that the company should buy 28 Speedhawk and 28 Classy to maximize profit.
+
+``` r
+best_sol <- optimal$solution
+names(best_sol) <- c('x1','x2','x3','x4')
+best_sol
+## x1 x2 x3 x4 
+## 28  0  0 28
+```
+
+The profit the company should get from the boat is RM5,040.
+
+``` r
+optimal$objval
+## [1] 5040
+```
+
+Summary
+-------
+
+Floatay Tours have managed to optimize their profit by using linear programming. The company only needs to buy two type of boats and at the same time still have good relationship with their suppliers.
+
+Linear programming is able to help companies to make decision when complex constraints are involved.
