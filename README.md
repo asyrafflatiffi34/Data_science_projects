@@ -16,7 +16,7 @@ Repository containing portfolio of data science projects completed by me for sel
      
      ![GitHub Logo](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/CustomerClustering/figures/README-unnamed-chunk-11-1.png)
      
-### Exploratory Data Analysis
+## Exploratory Data Analysis
    * [Lung Capacity](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Lungcap/lungcap.md): Lung capacity of each person is based on several factors. In this analysis, we will explore those relationship and understand how each of them can impact a person's lung capacity. 
  
 ## Linear Programming 
