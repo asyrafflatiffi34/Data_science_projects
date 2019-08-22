@@ -5,7 +5,7 @@ Repository containing portfolio of data science projects completed by me for sel
 *Note : data used for projects can be found in the data folder*
 
 ## Content 
-### Machine Learning
+### Machine Learning/Predictive Model
  * Supervised Learning
     * [Iris Classification](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Iris_prediction/iris.md): Classification problem to identify the type of flower species. Four different features is used to accurately predict which type of species it is. 
     * [Big Mart Prediction](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Bigmart/bigmart.md): Create a prediction model to predict sales for shop. This would help them to minimize wastage and also fulfill all the demands.
@@ -19,5 +19,8 @@ Repository containing portfolio of data science projects completed by me for sel
 ## Exploratory Data Analysis
    * [Lung Capacity](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Lungcap/lungcap.md): Lung capacity of each person is based on several factors. In this analysis, we will explore those relationship and understand how each of them can impact a person's lung capacity. 
  
-## Linear Programming 
+## Linear Programming/Optimization Model
    * [Maximizing Boat Profit](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/BoatMax/boat.md): Maximizing boat profit with complex constraints by using linear programming. 
+
+## Monte Carlo Simulation
+   * [Analyzing Risk of New Product](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Goodfood/newproduct.md): Goodfood wants to launch a new product in their menu but wasn't sure of the risk. Monte Carlo simulation was used to help the company to identify the probability of incurring a lost as well as the probability of getting a certain amount of net profit.  
