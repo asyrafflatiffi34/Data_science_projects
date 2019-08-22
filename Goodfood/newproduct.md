@@ -1,0 +1,147 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+Analysing Risk of New Product
+=============================
+
+Goodfood is a fast food restaurant that has been operating for the past 5 years. Recently they decided to introduce a new meal into their menu. Before proceeding, they would like to understand the risk associated with bringing in the new meal. They have identified few key info to help understand the risk.
+
+-   Number of Sales
+-   Cost Per Unit
+-   Price Per Unit
+-   Fixed Cost
+
+Goodfood also have identified three type of markets which are Hot, Okay and Slow. From their research, it has shown that different market would have different selling price, total sales and cost. The following table shows the differece:
+
+| Market | Meals Sold/Year | Cost/Unit(RM) | Price/Unit(RM) |
+|--------|-----------------|---------------|----------------|
+| Hot    | 100,000         | 5.5           | 8              |
+| Okay   | 75,000          | 6.5           | 10             |
+| Slow   | 50,000          | 7.5           | 11             |
+
+Since this would be a huge investment from Goodfood, they would like to know the probability of certain scenarios such as:
+
+1.  Probability of incurring a lost.
+2.  Probability of Profit of at least RM250,000
+3.  Probability Profit between RM200,000 and RM400,000
+
+Creating Simulations
+--------------------
+
+We will create simulations for each variables as metioned earlier. We will do up to 100,000 simulation to have the best output.
+
+``` r
+set.seed(9)
+sales_units <- rnorm(n = 100000,mean=75000,25000)
+cost_per_unit <- rnorm(n=100000,mean=6.5,sd=1)
+selling_price <- rnorm(n=100000,mean = 9.67,sd=1.53)
+fixed_cost <- 120000
+```
+
+Here is the formula to get the Net Profit
+
+*Net Profit = Number of Sales - (Price Per Unit \* Cost Per Unit ) - Fixed Cost*
+
+``` r
+net_profit <- sales_units*(selling_price- cost_per_unit) - fixed_cost                            
+```
+
+Net Profit/Output Exploration
+-----------------------------
+
+The output has 100,000 Net Profit from the simulation we did earlier hence we would have to do some exploration to have a better understand on the output is.
+
+``` r
+mean(net_profit)
+## [1] 118458.7
+sd(net_profit)
+## [1] 164303.4
+summary(net_profit)
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## -589640    2038   99505  118459  215645 1170913
+```
+
+From these three lines,we can see the range, mean and standard deviation on the output. From both the mean and standard deviation we can understand the spread of the output better.
+
+Output Visualization
+--------------------
+
+To further understand the output, we will use visualization techniques to see the spread of the output.
+
+``` r
+par(mfrow=c(2,2))
+h <- hist(net_profit/100000,breaks = 30,main='Histogram Net Profit',xlab = 'Net Profit(RM100,00)')
+options(scipen=10)
+
+plot(net_profit/100000,main = 'Net Profit Plot',ylab = 'Net Profit(RM100,00)')
+boxplot(net_profit/100000,main = 'Net Profit Boxplot(RM100,00)')
+plot(density(net_profit/100000),main = 'Net Profit Density Plot',xlab = 'Net Profit(RM100,00)')
+```
+
+<img src="figures/README-unnamed-chunk-5-1.png" width="672" />
+
+Looking at the plots, we can see that there are a lot of outliers but the centre of both the density plot and histrgram shows that it's closer to 0. This means that the probability of getting a loss might be great and unfavorable towards Goodfood as they might see this as a huge risk.
+
+Finding Probability
+-------------------
+
+Earlier we mentioned that Goodfood wants to know the probability of 3 different scenarios.
+
+1.  Probability of having a loss.
+
+``` r
+pnorm(0,mean =mean(net_profit),sd= sd(net_profit))
+## [1] 0.2354623
+cuts <- cut(h$breaks, c(-Inf,-.5))
+plot(h, col='red'[cuts],main = 'Probability of loss',xaxt='n',xlab ='Net Profit(RM100,000)')
+abline(v=0,col="black",lwd=4,lty=2)
+text(-0,12500, "Probability = 24%",cex = 1.5)
+axis(side=1,at=c(-6,-4,-2,0,2,4,6,8,10),
+     labels = c(-6,-4,-2,0,2,4,6,8,10))
+```
+
+<img src="figures/README-unnamed-chunk-6-1.png" width="672" />
+
+From the histogram, we can see that the probability of incurring a loss is around 24%. Goodfood has to highly consider this before proceeding with launching their new meal.
+
+1.  Probability of getting at least RM250,000
+
+``` r
+pnorm(250000,mean =mean(net_profit),sd=sd(net_profit),lower.tail = FALSE)
+## [1] 0.2116815
+cuts <- cut(h$breaks, c(2,Inf))
+plot(h, col='red'[cuts],main = 'Probability of at least RM250,000',xaxt='n',xlab ='Net Profit(RM100,000)')
+abline(v=2.5,col="black",lwd=4,lty=2)
+text(2.5,12500, "Probability = 21%",cex = 1.5)
+axis(side=1,at=c(-6,-4,-2,0,2,4,6,8,10),
+     labels = c(-6,-4,-2,0,2,4,6,8,10))
+```
+
+<img src="figures/README-unnamed-chunk-7-1.png" width="672" />
+
+The probability of getting at least RM250,000 is around 21% which can be seen in the plot above.
+
+1.  Probability of getting between RM200,000 and RM400,000
+
+``` r
+pnorm(400000,mean =mean(net_profit),sd= sd(net_profit))-
+  pnorm(200000,mean =mean(net_profit),sd= sd(net_profit))
+## [1] 0.2665405
+cuts <- cut(h$breaks, c(1.8,3.8))
+plot(h, col='red'[cuts],main = 'Probability profit between RM200,000 and RM400,000',xaxt='n',xlab ='Net Profit(RM100,000)')
+abline(v=2,col="black",lwd=4,lty=2)
+abline(v=4,col="black",lwd=4,lty=2)
+text(3,12500, "Probability = 27%",cex = 1.5)
+axis(side=1,at=c(-6,-4,-2,0,2,4,6,8,10),
+     labels = c(-6,-4,-2,0,2,4,6,8,10))
+```
+
+<img src="figures/README-unnamed-chunk-8-1.png" width="672" />
+
+Lastly, Goodfood wanted to know the probability of getting profit between RM200,000 and RM400,000. From the simulation, we have found out that the probability is around 27%.
+
+Summary
+-------
+
+From our analysis, we have found that the probability is quite high since the probability of getting at least RM250,000 is lower. The CEO of Goodfood might want to reconsider another approach if he feels that this product is essential to the company's growth.
+
+A different approach would be trying to decrease the cost, increase the selling price or even rethink of the market that the company wants to aaproach. This is to ensure that they are able to lower the probability of getting a loss as Goodfood will be making a huge investment towards this new product.
