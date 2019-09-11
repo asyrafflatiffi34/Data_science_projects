@@ -18,7 +18,7 @@ Repository containing portfolio of data science projects completed by me for sel
    * [Lung Capacity](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/Lungcap/lungcap.md): Lung capacity of each person is based on several factors. In this analysis, we will explore those relationship and understand how each of them can impact a person's lung capacity. 
    
 ## Dashboard
-   *[Bigmart Sales](https://asyrafflatiffi.shinyapps.io/bigmartdashboard/): Bigmart's decision maker wants to see their sales data on a single file. They want to see if different attributes at the store impacts the store sales. Filters and also pivot tables are also included for decision makers to better understand their data. Used flexdashboard and pushed it on shinyio to put it online. 
+   * [Bigmart Sales](https://asyrafflatiffi.shinyapps.io/bigmartdashboard/): Bigmart's decision maker wants to see their sales data on a single file. They want to see if different attributes at the store impacts the store sales. Filters and also pivot tables are also included for decision makers to better understand their data. Used flexdashboard and pushed it on shinyio to put it online. 
  
 ## Linear Programming/Optimization Model
    * [Maximizing Boat Profit](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/BoatMax/boat.md): Floataway Tours want to invest in new boats to expand their business but are unsure how many type of boats they should but with their current budget. Linear programmingn was used to identify how many type of boats they should invest in to ensure maximum profit is achieved. 
