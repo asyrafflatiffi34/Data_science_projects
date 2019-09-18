@@ -19,6 +19,8 @@ Repository containing portfolio of data science projects completed by me for sel
    
 ## Dashboard
    * [Bigmart Sales](https://asyrafflatiffi.shinyapps.io/bigmartdashboard/): Bigmart's decision maker wants to see their sales data on a single file. They want to see if different attributes at the store impacts the store sales. Filters and also pivot tables are also included for decision makers to better understand their data. Used flexdashboard and pushed it on shinyio to put it online. 
+   
+   * [Malaysia Crimes](https://asyrafflatiffi.shinyapps.io/malaysiancrime): Crimes in Malaysia have different trends since it first started collecting reports. With this dashboard decision makers can understand the trends for crimes for each area. This will help in terms of allocating resources and expertise. 
  
 ## Linear Programming/Optimization Model
    * [Maximizing Boat Profit](https://github.com/asyrafflatiffi34/data_science_projects/blob/master/BoatMax/boat.md): Floataway Tours want to invest in new boats to expand their business but are unsure how many type of boats they should but with their current budget. Linear programmingn was used to identify how many type of boats they should invest in to ensure maximum profit is achieved. 
