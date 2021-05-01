@@ -1,4 +1,4 @@
-# Data Science Projects
+# Data Projects
 
 Repository containing portfolio of data science projects completed by me for self learning, and hobby purposes. Mainly use R for different type of projects. 
 
